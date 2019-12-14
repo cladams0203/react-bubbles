@@ -11,7 +11,11 @@ const ColorList = ({ colors, updateColors }) => {
   console.log(colors);
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
-  console.log(colorToEdit)
+  const [newColor, setNewColor] = useState({
+    color: '',
+    hex: ''
+  })
+  console.log(newColor)
 
   const editColor = color => {
     setEditing(true);
@@ -44,6 +48,21 @@ const ColorList = ({ colors, updateColors }) => {
       })
   };
 
+  const addColor = () => {
+    const colorObject ={
+      color: newColor.color,
+      code: {hex: `#${newColor.hex}`}
+    }
+    updateColors([...colors, colorObject])
+    console.log(colorObject)
+    axiosWithAuth().post('/api/colors', colorObject)
+      .then(res => {
+        console.log(res)
+        setNewColor({color:'', hex: ''})
+      })
+      .catch(err => console.log(err))
+  }
+
   return (
     <div className="colors-wrap">
       <p>colors</p>
@@ -66,7 +85,30 @@ const ColorList = ({ colors, updateColors }) => {
             />
           </li>
         ))}
+        <form onSubmit={(e) => {
+          e.preventDefault()
+          addColor()
+        }}>
+          <input 
+              name='color'
+              placeholder='New Color Name'
+              value={newColor.color}
+              onChange={(e) => {
+                setNewColor({...newColor, [e.target.name]: e.target.value})
+              }}
+            />
+            <input 
+              name='hex'
+              placeholder='Hex Code'
+              value={newColor.code}
+              onChange={(e) => {
+                setNewColor({...newColor, [e.target.name]: e.target.value})
+              }}
+            />
+            <button type='submit'>Add Color</button>
+        </form>
       </ul>
+      
       {editing && (
         <form onSubmit={saveEdit}>
           <legend>edit color</legend>
@@ -99,6 +141,8 @@ const ColorList = ({ colors, updateColors }) => {
       )}
       <div className="spacer" />
       {/* stretch - build another form here to add a color */}
+     
+        
     </div>
   );
 };
