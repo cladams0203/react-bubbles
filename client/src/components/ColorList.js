@@ -58,7 +58,7 @@ const ColorList = ({ colors, updateColors }) => {
     axiosWithAuth().post('/api/colors', colorObject)
       .then(res => {
         console.log(res)
-        setNewColor({color:'', hex: ''})
+        
       })
       .catch(err => console.log(err))
   }
@@ -88,6 +88,7 @@ const ColorList = ({ colors, updateColors }) => {
         <form onSubmit={(e) => {
           e.preventDefault()
           addColor()
+          setNewColor({color:'', hex: ''})
         }}>
           <input 
               name='color'
@@ -100,7 +101,7 @@ const ColorList = ({ colors, updateColors }) => {
             <input 
               name='hex'
               placeholder='Hex Code'
-              value={newColor.code}
+              value={newColor.hex}
               onChange={(e) => {
                 setNewColor({...newColor, [e.target.name]: e.target.value})
               }}
